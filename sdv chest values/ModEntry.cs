@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using sdv_chest_values;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
@@ -17,7 +18,8 @@ namespace YourProjectName
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+            helper.Events.Display.MenuChanged += this.CheckChest;
+            helper.Events.Display.RenderedActiveMenu += this.DisplayText;
         }
 
 
@@ -27,14 +29,21 @@ namespace YourProjectName
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
+        private void CheckChest(object? sender, MenuChangedEventArgs e)
         {
-            // ignore if player hasn't loaded a save yet
-            if (!Context.IsWorldReady)
-                return;
+            if(e.NewMenu is StardewValley.Menus.ItemGrabMenu menu)
+            {
+                if(menu.context is StardewValley.Objects.Chest chest)
+                {
+                    long total = ChestMethods.GetTotalValue(chest);
+                    Console.WriteLine($"{total}");
+                }
+            }
+        }
 
-            // print button presses to the console window
-            this.Monitor.Log($"{Game1.player.Name} pressed {e.Button}.", LogLevel.Debug);
+        private void DisplayText(object? sender, RenderedActiveMenuEventArgs e)
+        {
+
         }
     }
 }
