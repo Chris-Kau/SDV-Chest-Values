@@ -14,6 +14,8 @@ namespace YourProjectName
     /// <summary>The mod entry point.</summary>
     internal sealed class ModEntry : Mod
     {
+        const int textXOffset = -25;
+        const int textYOffset = 40;
         public override void Entry(IModHelper helper)
         {
             helper.Events.Display.MenuChanged += this.CheckChest;
@@ -41,12 +43,12 @@ namespace YourProjectName
                 //Checks to see if the mouse cursor is on a chest
                 if(loc.objects.ContainsKey(Game1.currentCursorTile ) && (loc.Objects[Game1.currentCursorTile] is StardewValley.Objects.Chest chest))
                 {
-                    MouseText.DrawText(e, mousePos, -25, 40, chest);
+                    MouseText.DrawText(e, mousePos, textXOffset, textYOffset, chest);
                 }
                 //Checks to see if the mouse cursor is one tile above the chest
                 if (loc.objects.ContainsKey(Game1.currentCursorTile + new Vector2(0,1)) && (loc.Objects[Game1.currentCursorTile + new Vector2(0, 1)] is StardewValley.Objects.Chest chest2))
                 {
-                    MouseText.DrawText(e, mousePos, -25, 40, chest2);
+                    MouseText.DrawText(e, mousePos, textXOffset, textYOffset, chest2);
                 }
             }
         }
