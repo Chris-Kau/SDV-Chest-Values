@@ -16,7 +16,7 @@ namespace sdv_chest_values
         public static void DrawText(RenderedActiveMenuEventArgs e, Vector2 mousePos, int xOffset, int yOffset, StardewValley.Objects.Chest chest)
         {
             //draws the price as a string underneath the cursor
-            e.SpriteBatch.DrawString(Game1.smallFont, $"{ChestMethods.GetTotalValue(chest)}", mousePos + new Vector2(0, yOffset), Color.White);
+            e.SpriteBatch.DrawString(Game1.smallFont, $"{ChestMethods.GetTotalValue(chest)}", mousePos + new Vector2(xOffset + 25, yOffset), Color.White);
             //draws the coin icon to the left of the price string
             ClickableTextureComponent coinsIcon = new ClickableTextureComponent(
                 new Rectangle((int)mousePos.X + xOffset, (int)mousePos.Y + yOffset + 3, 15, 14),
