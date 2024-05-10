@@ -9,7 +9,7 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Menus;
 
-namespace YourProjectName
+namespace sdv_chest_values
 {
     /// <summary>The mod entry point.</summary>
     internal sealed class ModEntry : Mod
