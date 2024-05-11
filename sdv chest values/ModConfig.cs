@@ -9,5 +9,6 @@ namespace sdv_chest_values
     public sealed class ModConfig
     {
         public int textPosition { get; set; } = 1;
+        public bool toggleHover { get; set; } = true;
     }
 }
