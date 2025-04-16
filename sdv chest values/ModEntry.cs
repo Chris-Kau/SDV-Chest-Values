@@ -21,6 +21,8 @@ namespace sdv_chest_values
         {
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.Display.RenderedActiveMenu += this.DisplayText;
+            //helper.Events.GameLoop.SaveLoaded += this.LoadInitialChestValues;
+            helper.Events.Player.Warped += this.LoadInitialChestValues;
         }
 
         private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
@@ -55,25 +57,36 @@ namespace sdv_chest_values
 
 
         }
+
+        private async void LoadInitialChestValues(object? sender, WarpedEventArgs e)
+        {
+            GameLocation newLocation = e.NewLocation;
+            await Task.Run(() =>
+            {
+                var cm = ChestMethods.UpdateAllChestValues(newLocation);
+                ChestMethods.ChestValues = cm;
+            });
+        }
+
         private void DisplayText(object? sender, RenderedActiveMenuEventArgs e)
         {
             if(Context.IsWorldReady && Game1.activeClickableMenu is null && Config.toggleHover)
             {
                 GameLocation loc = Game1.player.currentLocation;
                 Vector2 mousePos = new Vector2(Game1.getMousePosition().X, Game1.getMousePosition().Y);
-
+                Vector2 mouseTilePos = Game1.currentCursorTile;
                 //Checks to see if the mouse cursor is on a chest
-                if(loc.objects.ContainsKey(Game1.currentCursorTile ) && (loc.Objects[Game1.currentCursorTile] is StardewValley.Objects.Chest chest))
+
+                if (loc.objects.ContainsKey(Game1.currentCursorTile) && (loc.Objects[Game1.currentCursorTile] is StardewValley.Objects.Chest chest))
                 {
-                    MouseText.DrawText(e, mousePos, Config.textPosition, chest);
+                    MouseText.DrawText(e, mousePos, Config.textPosition, chest, mouseTilePos);
                 }
-                //Checks to see if the mouse cursor is one tile above the chest
+                //Checks to see if the mouse cursor is one tile above the chest because chest hitbox yeah...
                 if (loc.objects.ContainsKey(Game1.currentCursorTile + new Vector2(0,1)) && (loc.Objects[Game1.currentCursorTile + new Vector2(0, 1)] is StardewValley.Objects.Chest chest2))
                 {
-                    MouseText.DrawText(e, mousePos, Config.textPosition, chest2);
+                    MouseText.DrawText(e, mousePos, Config.textPosition, chest2, mouseTilePos + new Vector2(0,1));
                 }
             }
         }
     }
 }
-//tpos[Config.textPosition][0]

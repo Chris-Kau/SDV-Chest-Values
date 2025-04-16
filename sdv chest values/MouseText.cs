@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using StardewModdingAPI.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using xTile.Tiles;
 
 namespace sdv_chest_values
 {
@@ -21,9 +22,21 @@ namespace sdv_chest_values
                         { 3, new List<int> {0, 2}},
                         { 4, new List<int> {40, 2}}
                     };
-        public static void DrawText(RenderedActiveMenuEventArgs e, Vector2 mousePos, int textpos, StardewValley.Objects.Chest chest)
+        public static void DrawText(RenderedActiveMenuEventArgs e, Vector2 mousePos, int textpos, StardewValley.Objects.Chest chest, Vector2 chestTilePos)
         {
-            string total_value = ChestMethods.GetTotalValue(chest).ToString();
+            string total_value = "";
+            if (ChestMethods.ChestValues == null)
+            {
+                total_value = "Chest data has not loaded";
+            }
+            else
+            {
+                if (ChestMethods.ChestValues.TryGetValue(chestTilePos, out long value))
+                    total_value = value.ToString();
+            }
+
+
+
             //only check to see if the player wants the text on the left of the cursor so we can take into account how many digits are in the total_value so the text doesnt overlap the cursor.
             if (textpos == 3)
             {
