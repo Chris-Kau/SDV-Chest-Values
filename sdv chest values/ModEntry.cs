@@ -21,8 +21,10 @@ namespace sdv_chest_values
         {
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.Display.RenderedActiveMenu += this.DisplayText;
-            //helper.Events.GameLoop.SaveLoaded += this.LoadInitialChestValues;
-            helper.Events.Player.Warped += this.LoadInitialChestValues;
+            helper.Events.Player.Warped += this.LoadChestValuesOnWarped;
+            helper.Events.Display.MenuChanged += this.UpdateChestValueOnMenuChanged;
+            helper.Events.World.ObjectListChanged += this.UpdateChestValueOnChestPlaced;
+            helper.Events.GameLoop.DayStarted += this.UpdateChestValueOnDayStarted;
         }
 
         private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
@@ -58,16 +60,61 @@ namespace sdv_chest_values
 
         }
 
-        private async void LoadInitialChestValues(object? sender, WarpedEventArgs e)
+        private async void LoadChestValuesOnWarped(object? sender, WarpedEventArgs e)
         {
             GameLocation newLocation = e.NewLocation;
             await Task.Run(() =>
             {
-                var cm = ChestMethods.UpdateAllChestValues(newLocation);
-                ChestMethods.ChestValues = cm;
+                ChestMethods.UpdateAllChestValues(newLocation);
             });
         }
 
+        private async void UpdateChestValueOnMenuChanged(object? sender, MenuChangedEventArgs e)
+        {
+            if(e.OldMenu != null && e.OldMenu is StardewValley.Menus.ItemGrabMenu menu)
+            {
+                if(menu.context is StardewValley.Objects.Chest chest)
+                {
+                    await Task.Run(() =>
+                    {
+                        ChestMethods.UpdateChestValue(chest);
+                    });
+                }
+            }
+        }
+
+        private async void UpdateChestValueOnChestPlaced(object? sender, ObjectListChangedEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                if (e.IsCurrentLocation)
+                {
+                    Console.WriteLine("Removed:");
+                    foreach (var ob in e.Removed.Where(x => x.Value is StardewValley.Objects.Chest))
+                    {
+                        var chest = (StardewValley.Objects.Chest)ob.Value;
+                        ChestMethods.RemoveChestValue(chest);
+                    }
+                    Console.WriteLine("Added:");
+                    foreach (var ob in e.Added.Where(x => x.Value is StardewValley.Objects.Chest))
+                    {
+                        var chest = (StardewValley.Objects.Chest)ob.Value;
+                        ChestMethods.AddChestValue(chest);
+                    }
+                }
+
+            });
+
+        }
+
+        private async void UpdateChestValueOnDayStarted(object? sender, DayStartedEventArgs e)
+        {
+            GameLocation loc = Game1.player.currentLocation;
+            await Task.Run(() =>
+            {
+                ChestMethods.UpdateAllChestValues(loc);
+            });
+        }
         private void DisplayText(object? sender, RenderedActiveMenuEventArgs e)
         {
             if(Context.IsWorldReady && Game1.activeClickableMenu is null && Config.toggleHover)

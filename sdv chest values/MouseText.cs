@@ -25,7 +25,7 @@ namespace sdv_chest_values
         public static void DrawText(RenderedActiveMenuEventArgs e, Vector2 mousePos, int textpos, StardewValley.Objects.Chest chest, Vector2 chestTilePos)
         {
             string total_value = "";
-            if (ChestMethods.ChestValues == null)
+            if (ChestMethods.ChestValues.Count <= 0)
             {
                 total_value = "Chest data has not loaded";
             }

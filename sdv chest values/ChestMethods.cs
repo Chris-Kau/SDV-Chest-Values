@@ -12,7 +12,7 @@ namespace sdv_chest_values
 {
     internal class ChestMethods
     {
-        public static Dictionary<Vector2, long>? ChestValues;
+        public static Dictionary<Vector2, long> ChestValues = new();
 
         private static long GetTotalValue(IEnumerable<Item> Items)
         {
@@ -29,20 +29,33 @@ namespace sdv_chest_values
         /// Populates the Chests Dictionary with all Chests and their values on the given location
         /// </summary>
         /// <param name="location"></param>
-        public static Dictionary<Vector2, long> UpdateAllChestValues(GameLocation location)
+        public static void UpdateAllChestValues(GameLocation location)
         {
-            Dictionary<Vector2, long> ChestValues = new();
+            ChestValues.Clear();
             foreach (var pair in location.Objects.Pairs)
             {
                 if(pair.Value is StardewValley.Objects.Chest chest)
                 {
                     var tv = GetTotalValue(chest.Items);
                     ChestValues[pair.Key] = tv;
-                    //Because the chest hitbox for mouse hovering is technically 2 tiles tall, we have to take that into account
-                    ChestValues[pair.Key + new Vector2(0, 1)] = tv;
                 }
             }
-            return ChestValues;
+        }
+
+        public static void UpdateChestValue(StardewValley.Objects.Chest chest)
+        {
+            var tv = GetTotalValue(chest.Items);
+            ChestValues[chest.TileLocation] = tv;
+        }
+
+        public static void RemoveChestValue(StardewValley.Objects.Chest chest)
+        {
+            ChestValues.Remove(chest.TileLocation);
+        }
+
+        public static void AddChestValue(StardewValley.Objects.Chest chest)
+        {
+            ChestValues[chest.TileLocation] = GetTotalValue(chest.Items);
         }
     }
 }
