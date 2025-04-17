@@ -8,20 +8,34 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using System.Linq;
 using System.Threading.Tasks;
+using StardewValley.Objects;
 namespace sdv_chest_values
 {
     internal class ChestMethods
     {
         public static Dictionary<Vector2, long> ChestValues = new();
 
-        private static long GetTotalValue(IEnumerable<Item> Items)
+        private static long GetTotalValue(StardewValley.Objects.Chest chest)
         {
             long total = 0;
-            foreach (Item i in Items)
+            if (chest.Name == "Junimo Chest")
             {
-                if (i.sellToStorePrice() != 0)
-                    total += i.sellToStorePrice() * i.Stack;
+                foreach (Item i in Game1.player.team.GetOrCreateGlobalInventory("JunimoChests"))
+                {
+                    if (i.sellToStorePrice() != 0)
+                        total += i.sellToStorePrice() * i.Stack;
+                }
             }
+            else
+            {
+                foreach (Item i in chest.Items)
+                {
+                    if (i.sellToStorePrice() != 0)
+                        total += i.sellToStorePrice() * i.Stack;
+                }
+
+            }
+
             return total;
         }
 
@@ -36,7 +50,7 @@ namespace sdv_chest_values
             {
                 if(pair.Value is StardewValley.Objects.Chest chest)
                 {
-                    var tv = GetTotalValue(chest.Items);
+                    long tv = GetTotalValue(chest);
                     ChestValues[pair.Key] = tv;
                 }
             }
@@ -44,7 +58,7 @@ namespace sdv_chest_values
 
         public static void UpdateChestValue(StardewValley.Objects.Chest chest)
         {
-            var tv = GetTotalValue(chest.Items);
+            long tv = GetTotalValue(chest);
             ChestValues[chest.TileLocation] = tv;
         }
 
@@ -55,7 +69,8 @@ namespace sdv_chest_values
 
         public static void AddChestValue(StardewValley.Objects.Chest chest)
         {
-            ChestValues[chest.TileLocation] = GetTotalValue(chest.Items);
+            long tv = GetTotalValue(chest);
+            ChestValues[chest.TileLocation] = tv;
         }
     }
 }

@@ -123,16 +123,15 @@ namespace sdv_chest_values
                 Vector2 mousePos = new Vector2(Game1.getMousePosition().X, Game1.getMousePosition().Y);
                 Vector2 mouseTilePos = Game1.currentCursorTile;
                 //Checks to see if the mouse cursor is on a chest
-
                 if (loc.objects.ContainsKey(Game1.currentCursorTile) && (loc.Objects[Game1.currentCursorTile] is StardewValley.Objects.Chest chest))
                 {
                     MouseText.DrawText(e, mousePos, Config.textPosition, chest, mouseTilePos);
                 }
                 //Checks to see if the mouse cursor is one tile above the chest because chest hitbox yeah...
-                if (loc.objects.ContainsKey(Game1.currentCursorTile + new Vector2(0,1)) && (loc.Objects[Game1.currentCursorTile + new Vector2(0, 1)] is StardewValley.Objects.Chest chest2))
-                {
-                    MouseText.DrawText(e, mousePos, Config.textPosition, chest2, mouseTilePos + new Vector2(0,1));
-                }
+                //if (loc.objects.ContainsKey(Game1.currentCursorTile + new Vector2(0, 1)) && (loc.Objects[Game1.currentCursorTile + new Vector2(0, 1)] is StardewValley.Objects.Chest chest2))
+                //{
+                //    MouseText.DrawText(e, mousePos, Config.textPosition, chest2, mouseTilePos + new Vector2(0, 1));
+                //}
             }
         }
     }
