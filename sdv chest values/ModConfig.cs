@@ -10,5 +10,6 @@ namespace sdv_chest_values
     {
         public int textPosition { get; set; } = 1;
         public bool toggleHover { get; set; } = true;
+        public float textBgTransparency { get; set; } = 0.6f;
     }
 }

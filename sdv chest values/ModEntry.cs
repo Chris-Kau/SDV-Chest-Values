@@ -58,6 +58,16 @@ namespace sdv_chest_values
                 () => "Toggle Chest Hover Effect"
             );
 
+            configMenu.AddNumberOption(
+                this.ModManifest,
+                () => Config.textBgTransparency,
+                value => Config.textBgTransparency = value,
+                () => "Text Background Transparency",
+                min: 0,
+                max: 1,
+                interval: 0.1f
+            );
+
 
         }
 
@@ -127,7 +137,7 @@ namespace sdv_chest_values
                 //Checks to see if the mouse cursor is on a chest
                 if (loc.objects.ContainsKey(mouseTile) && (loc.Objects[mouseTile] is StardewValley.Objects.Chest chest))
                 {
-                    MouseText.DrawText(e, mousePos, Config.textPosition, chest, mouseTile);
+                    MouseText.DrawText(e, mousePos, Config.textPosition, chest, mouseTile, 1 - Config.textBgTransparency);
                 }
             }
         }
