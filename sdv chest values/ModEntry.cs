@@ -8,6 +8,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
+using StardewValley.Buildings;
 using StardewValley.Menus;
 
 namespace sdv_chest_values
@@ -89,13 +90,11 @@ namespace sdv_chest_values
             {
                 if (e.IsCurrentLocation)
                 {
-                    Console.WriteLine("Removed:");
                     foreach (var ob in e.Removed.Where(x => x.Value is StardewValley.Objects.Chest))
                     {
                         var chest = (StardewValley.Objects.Chest)ob.Value;
                         ChestMethods.RemoveChestValue(chest);
                     }
-                    Console.WriteLine("Added:");
                     foreach (var ob in e.Added.Where(x => x.Value is StardewValley.Objects.Chest))
                     {
                         var chest = (StardewValley.Objects.Chest)ob.Value;
@@ -120,18 +119,23 @@ namespace sdv_chest_values
             if(Context.IsWorldReady && Game1.activeClickableMenu is null && Config.toggleHover)
             {
                 GameLocation loc = Game1.player.currentLocation;
+
                 Vector2 mousePos = new Vector2(Game1.getMousePosition().X, Game1.getMousePosition().Y);
-                Vector2 mouseTilePos = Game1.currentCursorTile;
+                Vector2 mouseTile = Game1.currentCursorTile;
                 //Checks to see if the mouse cursor is on a chest
-                if (loc.objects.ContainsKey(Game1.currentCursorTile) && (loc.Objects[Game1.currentCursorTile] is StardewValley.Objects.Chest chest))
+                if (loc.objects.ContainsKey(mouseTile) && (loc.Objects[mouseTile] is StardewValley.Objects.Chest chest))
                 {
-                    MouseText.DrawText(e, mousePos, Config.textPosition, chest, mouseTilePos);
+                    MouseText.DrawText(e, mousePos, Config.textPosition, chest, mouseTile);
+                }else if (loc.IsFarm)
+                {
+                    GameLocation farm = Game1.getFarm();
+                    Vector2 hutOffset = new Vector2(1, 1);
+                    var hoveredHut = farm.buildings.Where(x => x is JunimoHut junimoHut).Where(x => new Vector2(x.tileX.Value, x.tileY.Value) + hutOffset == mouseTile).FirstOrDefault();
+                    if (hoveredHut != null)
+                    {
+                        Console.WriteLine("yes");
+                    }
                 }
-                //Checks to see if the mouse cursor is one tile above the chest because chest hitbox yeah...
-                //if (loc.objects.ContainsKey(Game1.currentCursorTile + new Vector2(0, 1)) && (loc.Objects[Game1.currentCursorTile + new Vector2(0, 1)] is StardewValley.Objects.Chest chest2))
-                //{
-                //    MouseText.DrawText(e, mousePos, Config.textPosition, chest2, mouseTilePos + new Vector2(0, 1));
-                //}
             }
         }
     }
