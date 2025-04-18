@@ -9,6 +9,7 @@ using StardewValley;
 using System.Linq;
 using System.Threading.Tasks;
 using StardewValley.Objects;
+using StardewValley.Buildings;
 namespace sdv_chest_values
 {
     internal class ChestMethods
@@ -53,6 +54,11 @@ namespace sdv_chest_values
                     long tv = GetTotalValue(chest);
                     ChestValues[pair.Key] = tv;
                 }
+            }
+            foreach(var junimoHut in Game1.getFarm().buildings.Where(x=>x is JunimoHut).Select(x=>(JunimoHut)x))
+            {
+                long tv = GetTotalValue(junimoHut.GetOutputChest());
+                ChestValues[new Vector2(junimoHut.tileX.Value + 1, junimoHut.tileY.Value + 1)] = tv;
             }
         }
 

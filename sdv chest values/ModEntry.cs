@@ -61,6 +61,7 @@ namespace sdv_chest_values
 
         }
 
+
         private async void LoadChestValuesOnWarped(object? sender, WarpedEventArgs e)
         {
             GameLocation newLocation = e.NewLocation;
@@ -72,9 +73,9 @@ namespace sdv_chest_values
 
         private async void UpdateChestValueOnMenuChanged(object? sender, MenuChangedEventArgs e)
         {
-            if(e.OldMenu != null && e.OldMenu is StardewValley.Menus.ItemGrabMenu menu)
+            if (e.OldMenu != null && e.OldMenu is StardewValley.Menus.ItemGrabMenu menu)
             {
-                if(menu.context is StardewValley.Objects.Chest chest)
+                if (menu.context is StardewValley.Objects.Chest chest)
                 {
                     await Task.Run(() =>
                     {
@@ -114,6 +115,7 @@ namespace sdv_chest_values
                 ChestMethods.UpdateAllChestValues(loc);
             });
         }
+
         private void DisplayText(object? sender, RenderedActiveMenuEventArgs e)
         {
             if(Context.IsWorldReady && Game1.activeClickableMenu is null && Config.toggleHover)
@@ -126,15 +128,6 @@ namespace sdv_chest_values
                 if (loc.objects.ContainsKey(mouseTile) && (loc.Objects[mouseTile] is StardewValley.Objects.Chest chest))
                 {
                     MouseText.DrawText(e, mousePos, Config.textPosition, chest, mouseTile);
-                }else if (loc.IsFarm)
-                {
-                    GameLocation farm = Game1.getFarm();
-                    Vector2 hutOffset = new Vector2(1, 1);
-                    var hoveredHut = farm.buildings.Where(x => x is JunimoHut junimoHut).Where(x => new Vector2(x.tileX.Value, x.tileY.Value) + hutOffset == mouseTile).FirstOrDefault();
-                    if (hoveredHut != null)
-                    {
-                        Console.WriteLine("yes");
-                    }
                 }
             }
         }
